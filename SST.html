@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous" />
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>                                                                                                                                        <style>@import url("https://fonts.googleapis.com/css2?family=Bree+Serif&family=Caveat:wght@400;700&family=Lobster&family=Monoton&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Playfair+Display+SC:ital,wght@0,400;0,700;1,700&family=Playfair+Display:ital,wght@0,400;0,700;1,700&family=Roboto:ital,wght@0,400;0,700;1,400;1,700&family=Source+Sans+Pro:ital,wght@0,400;0,700;1,700&family=Work+Sans:ital,wght@0,400;0,700;1,700&display=swap");
+
+.bg-container {
+    background-image: linear-gradient(to right, #f3eaff, #dac0ff);
+    height: 100%;
+    background-size: cover;
+    width: 100%;
+}
+
+.head {
+    color: #690cb0;
+    font-weight: bold;
+}
+
+.time {
+    font-size: 50px;
+}
+
+</style>
+</head>
+
+<body>
+    <div id="spinner" class="d-none text-center mt-5">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <div id="speedTypingTest" class="p-4 bg-container">
+        <div class="ml-5">
+            <h1 class="head pb-3 pt-3"> Speed <br /> Typing Test </h1>
+        </div>
+        <div class="pl-5 pt-4 d-flex">
+            <img src="https://assets.ccbp.in/frontend/dynamic-webapps/clock-img.png" class="w-25" />
+            <p id="timer" class="pl-5 pt-5"> <span class="time"> 0 </span> seconds </p>
+        </div>
+        <div class="card m-5 p-3">
+            <p id="quoteDisplay"></p>
+            <textarea id="quoteInput" rows="4" cols="80"></textarea>
+        </div>
+        <p id="result"> </p>
+        <div class="ml-5">
+            <button id="submitBtn" class="btn btn-primary mr-3"> Submit </button>
+            <button id="resetBtn" class="btn btn-light"> Reset </button>
+        </div>
+    </div>
+
+<script>let timeEl = document.getElementById("timer");
+let quoteEl = document.getElementById("quoteDisplay");
+let resultEl = document.getElementById("result");
+let submitEl = document.getElementById("submitBtn");
+let inputEl = document.getElementById("quoteInput");
+let resetEl = document.getElementById("resetBtn");
+let spinEl = document.getElementById("spinner");
+let containEl = document.getElementById("speedTypingTest");
+
+let count = 0;
+
+let options = {
+    method: "GET"
+};
+
+let uniqueId;
+let jsonData;
+
+function setIntervalFun() {
+    uniqueId = setInterval(function() {
+        count = count + 1;
+        timeEl.textContent = count + "    seconds";
+    }, 1000);
+}
+
+function clearIntervalFun() {
+    clearInterval(uniqueId);
+}
+
+
+function randomQuote() {
+    resultEl.textContent = "";
+    let url = "https://apis.ccbp.in/random-quote";
+
+    fetch(url, options)
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(jsonData) {
+            containEl.classList.remove("d-none");
+            spinEl.classList.add("d-none");
+            quoteEl.textContent = jsonData.content;
+            setIntervalFun();
+        });
+
+}
+
+randomQuote();
+
+
+resetEl.addEventListener("click", function() {
+    inputEl.value = "";
+    clearIntervalFun();
+    count = 0;
+    randomQuote();
+    containEl.classList.add("d-none");
+    spinEl.classList.remove("d-none");
+});
+
+submitEl.addEventListener("click", function() {
+    if (inputEl.value === quoteEl.textContent) {
+        clearIntervalFun();
+        resultEl.textContent = "You typed in " + count + " seconds";
+    } else {
+        resultEl.textContent = "You typed incorrect sentence";
+    }
+
+});</script>
+</body>
+
+</html>
